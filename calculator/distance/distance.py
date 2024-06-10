@@ -7,7 +7,7 @@ import numpy as np
 from calculator.config import PITCH, THRESHOLD
 from calculator.data import Data, Datum
 from calculator.stats import Stats
-from calculator.types import Array, MicroMeter
+from calculator.types import Array, Inch, MicroMeter
 
 from .optimize import approximate
 
@@ -20,12 +20,36 @@ class Distance:
     def stats(self) -> Stats:
         return Stats.calculate(self.value)
 
-    def show(self) -> None:
+    def show(self, figsize: tuple[Inch, Inch] | None = None, info: bool = False) -> None:
+        figsize = figsize or (6, 4)
+
+        fig, ax = plt.subplots(figsize=figsize, tight_layout=True)
 
         plt.plot(
             self.value,
             color='black', linestyle='-', linewidth=1, marker='.', markersize=2,
         )
+
+        if info:
+
+            # add stats
+            stats = self.stats
+
+            plt.text(
+                .05, .9,
+                f'$l = {stats}$, мкм',
+                transform=ax.transAxes,
+            )
+            plt.axhline(
+                stats.value,
+                color='grey', linestyle='--', linewidth=1,
+            )
+            plt.axhspan(
+                stats.value - stats.interval,
+                stats.value + stats.interval,
+                color='grey',
+                alpha=.1,
+            )
 
         plt.xlabel('Номер измерения')
         plt.ylabel('Расстояние, мкм')
