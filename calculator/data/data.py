@@ -4,6 +4,7 @@ from typing import Sequence
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 from calculator.types import Array, FileDir, N, U
 
@@ -53,11 +54,16 @@ class Data(tuple):
     @classmethod
     def load(cls, filedir: FileDir) -> 'Data':
 
-        with open(os.path.join(filedir, 'data.csv'), 'r') as file:
-            dat = np.loadtxt(file)
+        filepath = os.path.join(filedir, 'data.xlsx')
+        dat = pd.read_excel(
+            filepath,
+            header=None,
+            index_col=0,
+            engine='openpyxl',
+        )
 
         return cls(
-            [Datum(x=dat[:, 0], y=dat[:, i]) for i in range(1, dat.shape[1])],
+            [Datum(x=dat.index, y=dat[column]) for column in dat.columns],
             filedir=filedir,
         )
 
