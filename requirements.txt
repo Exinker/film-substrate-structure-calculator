@@ -1,5 +1,8 @@
+openpyxl
+
 matplotlib
 numpy
+pandas
 scipy
 
 jupyter
