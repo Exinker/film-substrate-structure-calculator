@@ -5,7 +5,7 @@ from typing import Sequence
 import matplotlib.pyplot as plt
 import numpy as np
 
-from calculator.types import Array, N, U
+from calculator.types import Array, FileDir, N, U
 
 from .utils import calculate_cursor
 
@@ -51,14 +51,18 @@ class Datum:
 class Data(tuple):
 
     @classmethod
-    def load(cls, filedir: str) -> 'Data':
+    def load(cls, filedir: FileDir) -> 'Data':
 
         with open(os.path.join(filedir, 'data.csv'), 'r') as file:
             dat = np.loadtxt(file)
 
         return cls(
             [Datum(x=dat[:, 0], y=dat[:, i]) for i in range(1, dat.shape[1])],
+            filedir=filedir,
         )
 
-    def __new__(cls, __data: Sequence[Datum]):
+    def __new__(cls, __data: Sequence[Datum], *args, **kwargs):
         return super().__new__(cls, __data)
+
+    def __init__(self, __data: Sequence[Datum], filedir: FileDir):
+        self.filedir = filedir
