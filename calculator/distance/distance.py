@@ -20,6 +20,18 @@ class Distance:
     def stats(self) -> Stats:
         return Stats.calculate(self.value)
 
+    def show(self) -> None:
+
+        plt.plot(
+            self.value,
+            color='black', linestyle='-', linewidth=1, marker='.', markersize=2,
+        )
+
+        plt.xlabel('Номер измерения')
+        plt.ylabel('Расстояние, мкм')
+
+        plt.show()
+
     @classmethod
     def calculate(cls, data: Data, save: bool = False, show: bool = False, verbose: bool = False) -> 'Distance':
         handler = partial(kernel, show=show, verbose=verbose)
