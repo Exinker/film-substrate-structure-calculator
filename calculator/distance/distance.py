@@ -1,32 +1,44 @@
+from functools import partial
+from dataclasses import dataclass
+
 import matplotlib.pyplot as plt
 import numpy as np
 
 from calculator.config import PITCH, THRESHOLD
 from calculator.data import Data, Datum
+from calculator.stats import Stats
 from calculator.types import Array, MicroMeter
 
 from .optimize import approximate
 
 
-def calculate_distances(data: Data, save: bool = False, show: bool = False, verbose: bool = False) -> Array[MicroMeter]:
+@dataclass(frozen=True, slots=True)
+class Distance:
+    value: MicroMeter | Array[MicroMeter]
 
-    distances = []
-    for datum in data:
-        distance = calculate_distance(
-            datum=datum.truncate(THRESHOLD),
-            show=show,
-            verbose=verbose,
+    @property
+    def stats(self) -> Stats:
+        return Stats.calculate(self.value)
+
+    @classmethod
+    def calculate(cls, data: Data, save: bool = False, show: bool = False, verbose: bool = False) -> 'Distance':
+        handler = partial(kernel, show=show, verbose=verbose)
+        value = np.array([handler(datum=datum.truncate(THRESHOLD)) for datum in data])
+
+        if save:
+            raise NotImplementedError
+
+        return cls(
+            value=value,
         )
-        distances.append(distance)
-    distances = np.array(distances)
 
-    if save:
-        raise NotImplementedError
-
-    return distances
+    def __str__(self) -> str:
+        return '[{}]'.format(
+            '; '.join(map(str, self.value)),
+        )
 
 
-def calculate_distance(datum: Datum, pitch: MicroMeter = PITCH, show: bool = False, verbose: bool = False) -> MicroMeter:
+def kernel(datum: Datum, pitch: MicroMeter = PITCH, show: bool = False, verbose: bool = False) -> MicroMeter:
     left, right = datum.split()
 
     positions = approximate(datum=left, show=show, verbose=verbose), approximate(datum=right, show=show, verbose=verbose)

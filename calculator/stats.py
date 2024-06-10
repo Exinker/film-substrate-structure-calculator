@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from scipy import stats
 from typing import ClassVar, NewType
 
+from calculator.config import N_DIGITS
 from calculator.types import Array
 
 T = NewType('T', int)
@@ -23,4 +24,4 @@ class Stats:
         return cls(np.mean(__value), interval)
 
     def __str__(self) -> str:
-        return fr'{self.value:.2f} \pm {self.interval:.2f}'
+        return fr'{np.round(self.value, N_DIGITS)} \pm {np.round(self.interval, N_DIGITS)}'

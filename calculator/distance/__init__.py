@@ -1,7 +1,7 @@
-from .distance import calculate_distance, calculate_distances
+from .distance import Distance, kernel
 from .optimize import gauss
 
 __all__ = [
-    calculate_distance, calculate_distances,
+    Distance, kernel,
     gauss,
 ]
