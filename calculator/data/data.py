@@ -52,8 +52,9 @@ class Datum:
 class Data(tuple):
 
     @classmethod
-    def load(cls, filedir: FileDir) -> 'Data':
+    def load(cls, name: str) -> 'Data':
 
+        filedir = os.path.join(os.getcwd(), 'data', name)
         filepath = os.path.join(filedir, 'data.xlsx')
         dat = pd.read_excel(
             filepath,
