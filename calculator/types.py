@@ -13,3 +13,5 @@ U = NewType('U', float)
 Inch = NewType('Inch', float)
 Meter = NewType('Meter', float)
 MicroMeter = NewType('MicroMeter', float)
+
+GPa = NewType('GPa', float)
