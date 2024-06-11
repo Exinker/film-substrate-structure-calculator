@@ -1,0 +1,3 @@
+
+class ConfigLoadError(FileNotFoundError):
+    pass
