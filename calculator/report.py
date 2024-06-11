@@ -1,16 +1,17 @@
-# 'x\u207B\u00B2'
 import os
 from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
 
+from calculator.config import Config
 from calculator.distance import Distance
 
 
 @dataclass(frozen=True, slots=True)
 class Report:
     distance: Distance
+    config: Config
 
     def create(self) -> None:
         filedir = self.distance.filedir
@@ -42,4 +43,25 @@ class Report:
             frame.to_excel(
                 writer,
                 sheet_name=name,
+            )
+
+        # calibration sheet
+
+        # config sheet
+        frame = pd.DataFrame({
+            'R_эт, м': [self.config.radius_standart],
+            'R_0, м': [self.config.radius_flat],
+            'd_f, мкм': [self.config.thickness_film],
+            'd_s, мкм': [self.config.thickness_substrate],
+            'E_s/(1 - nu_s), ГПа': [self.config.young_module],
+            'Знак σ': [self.config.stress_sign],
+        })
+
+        mode = 'a' if os.path.isfile(filepath) else 'w'
+        if_sheet_exists = 'replace' if mode == 'a' else None
+        with pd.ExcelWriter(filepath, mode=mode, if_sheet_exists=if_sheet_exists, engine='openpyxl') as writer:
+            frame.to_excel(
+                writer,
+                sheet_name='config',
+                index=None,
             )
