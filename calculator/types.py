@@ -16,4 +16,5 @@ MicroMeter = NewType('MicroMeter', float)
 
 ReciprocalMeter = NewType('ReciprocalMeter', float)
 
+MPa = NewType('MPa', float)
 GPa = NewType('GPa', float)
