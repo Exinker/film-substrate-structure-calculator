@@ -11,7 +11,7 @@ from calculator.types import Array, FileDir, N, U
 from .utils import calculate_cursor
 
 
-Kind = Literal['sample', 'standard', 'flat']
+Kind = Literal['sample', 'ref-standard', 'flat-standard']
 
 
 @dataclass(frozen=True, slots=True)
@@ -60,6 +60,8 @@ class Data(tuple):
         filedir = os.path.join(os.getcwd(), 'data', name)
         filename = {
             'sample': 'data',
+            'ref-standard': 'ref',
+            'flat-standard': 'flat',
         }.get(kind, kind)
         filepath = os.path.join(filedir, f'{filename}.xlsx')
 
