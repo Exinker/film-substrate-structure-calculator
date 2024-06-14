@@ -14,4 +14,6 @@ Inch = NewType('Inch', float)
 Meter = NewType('Meter', float)
 MicroMeter = NewType('MicroMeter', float)
 
+ReciprocalMeter = NewType('ReciprocalMeter', float)
+
 GPa = NewType('GPa', float)

@@ -49,8 +49,8 @@ class Report:
 
         # config sheet
         frame = pd.DataFrame({
-            'R_эт, м': [self.config.radius_standart],
-            'R_0, м': [self.config.radius_flat],
+            'R_эт, м': [self.config.curvature_ref_standart],
+            'R_0, м': [self.config.curvature_flat_standart],
             'd_f, мкм': [self.config.thickness_film],
             'd_s, мкм': [self.config.thickness_substrate],
             'E_s/(1 - nu_s), ГПа': [self.config.young_module],

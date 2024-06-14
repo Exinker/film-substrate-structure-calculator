@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 from calculator.exceptions import ConfigLoadError
-from calculator.types import GPa, Meter, MicroMeter
+from calculator.types import GPa, MicroMeter, ReciprocalMeter
 
 
 # --------        detector        --------
@@ -19,8 +19,8 @@ N_DIGITS = 2
 # --------        experiment        --------
 @dataclass(frozen=True, slots=True)
 class Config:
-    radius_standart: Meter
-    radius_flat: Meter
+    curvature_ref_standart: ReciprocalMeter
+    curvature_flat_standart: ReciprocalMeter
     thickness_film: MicroMeter
     thickness_substrate: MicroMeter
     young_module: GPa
