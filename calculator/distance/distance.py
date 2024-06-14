@@ -7,7 +7,7 @@ import numpy as np
 from calculator.config import PITCH, THRESHOLD
 from calculator.data import Data, Datum
 from calculator.stats import Stats
-from calculator.types import Array, FileDir, Inch, MicroMeter
+from calculator.types import Array, Inch, MicroMeter
 
 from .optimize import approximate
 
@@ -15,7 +15,6 @@ from .optimize import approximate
 @dataclass(frozen=True, slots=True)
 class Distance:
     value: MicroMeter | Array[MicroMeter]
-    filedir: FileDir
 
     @property
     def stats(self) -> Stats:
@@ -67,7 +66,6 @@ class Distance:
 
         return cls(
             value=value,
-            filedir=data.filedir,
         )
 
     def __str__(self) -> str:
