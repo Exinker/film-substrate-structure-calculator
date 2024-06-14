@@ -1,10 +1,8 @@
-import os
 from functools import partial
 from dataclasses import dataclass
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 from calculator.config import PITCH, THRESHOLD
 from calculator.data import Data, Datum
@@ -58,17 +56,6 @@ class Distance:
         plt.ylabel('Расстояние, мкм')
 
         plt.show()
-
-    def save(self) -> None:
-
-        filepath = os.path.join(self.filedir, 'distance.xlsx')
-        with pd.ExcelWriter(filepath, mode='w', engine='openpyxl') as writer:
-            pd.DataFrame({
-                'l, мкм': self.value,
-            }).to_excel(
-                writer,
-                index=False,
-            )
 
     @classmethod
     def calculate(cls, data: Data, save: bool = False, show: bool = False, verbose: bool = False) -> 'Distance':
