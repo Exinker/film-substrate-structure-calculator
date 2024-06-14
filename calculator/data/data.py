@@ -1,17 +1,14 @@
 import os
 from dataclasses import dataclass
-from typing import Literal, Sequence
+from typing import Sequence
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from calculator.types import Array, FileDir, N, U
+from calculator.types import Array, FileDir, Kind, N, U
 
 from .utils import calculate_cursor
-
-
-DataKind = Literal['sample', 'ref-standard', 'flat-standard']
 
 
 @dataclass(frozen=True, slots=True)
@@ -55,7 +52,7 @@ class Datum:
 class Data(tuple):
 
     @classmethod
-    def load(cls, name: str, kind: DataKind) -> 'Data':
+    def load(cls, name: str, kind: Kind) -> 'Data':
 
         filedir = os.path.join(os.getcwd(), 'data', name)
         filename = {
@@ -81,6 +78,6 @@ class Data(tuple):
     def __new__(cls, __data: Sequence[Datum], *args, **kwargs):
         return super().__new__(cls, __data)
 
-    def __init__(self, __data: Sequence[Datum], filedir: FileDir, kind: DataKind):
+    def __init__(self, __data: Sequence[Datum], filedir: FileDir, kind: Kind):
         self.filedir = filedir
         self.kind = kind

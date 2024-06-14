@@ -1,7 +1,7 @@
-from .data import Data, DataKind, Datum
+from .data import Data, Datum
 
 
 __all__ = [
-    Data, DataKind,
+    Data,
     Datum,
 ]
