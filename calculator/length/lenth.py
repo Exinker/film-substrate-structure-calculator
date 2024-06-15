@@ -79,18 +79,18 @@ def kernel(datum: Datum, pitch: MicroMeter = PITCH, show: bool = False, verbose:
     left, right = datum.split()
 
     positions = approximate(datum=left, show=show, verbose=verbose), approximate(datum=right, show=show, verbose=verbose)
-    distance = pitch * (max(positions) - min(positions))
+    length = pitch * (max(positions) - min(positions))
 
     if show:
         plt.show()
 
-    return distance
+    return length
 
 
-def calculate_distances(name: str) -> Mapping[Kind, Distance]:
+def calculate_lengths(name: str) -> Mapping[Kind, Distance]:
 
-    distances = {}
+    lengths = {}
     for kind in get_args(Kind):
-        distances[kind] = Distance.calculate(data=Data.load(name=name, kind=kind))
+        lengths[kind] = Distance.calculate(data=Data.load(name=name, kind=kind))
 
-    return distances
+    return lengths

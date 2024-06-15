@@ -5,16 +5,16 @@ import numpy as np
 import pandas as pd
 
 from calculator.config import Config
-from calculator.distance import Distance
+from calculator.length import Distance
 
 
 @dataclass(frozen=True, slots=True)
 class Report:
-    distance: Distance
+    length: Distance
     config: Config
 
     def create(self) -> None:
-        filedir = self.distance.filedir
+        filedir = self.length.filedir
         filepath = os.path.join(filedir, 'report.xlsx')
 
         # results sheet
@@ -23,15 +23,15 @@ class Report:
         frame = pd.concat([
             pd.DataFrame({
                 'index': ['Ср. знач.', 'Дов. инт.'],
-                'l, мкм': [self.distance.stats.value, self.distance.stats.interval],
+                'l, мкм': [self.length.stats.value, self.length.stats.interval],
             }).set_index('index', drop=True),
             pd.DataFrame({
                 'index': [''],
                 'l, мкм': [''],
             }).set_index('index', drop=True),
             pd.DataFrame({
-                'index': np.arange(1, len(self.distance.value)+1),
-                'l, мкм': self.distance.value,
+                'index': np.arange(1, len(self.length.value)+1),
+                'l, мкм': self.length.value,
             }).set_index('index', drop=True),
         ])
         frame.index.name = ''

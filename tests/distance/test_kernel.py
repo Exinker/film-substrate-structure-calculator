@@ -3,7 +3,7 @@ import pytest
 
 from calculator.config import PITCH
 from calculator.data import Datum
-from calculator.distance import kernel, gauss
+from calculator.length import kernel, gauss
 from calculator.types import N, U
 
 
@@ -32,7 +32,7 @@ def test__calculate(params: tuple[tuple[N, N, U], tuple[N, N, U]]):
 
     datum = emulate_datum(params=params)
 
-    distance = PITCH * (max(positions) - min(positions))
-    distance_hat = kernel(datum=datum)
+    length = PITCH * (max(positions) - min(positions))
+    length_hat = kernel(datum=datum)
 
-    assert np.isclose(distance, distance_hat, atol=1e-9)
+    assert np.isclose(length, length_hat, atol=1e-9)
