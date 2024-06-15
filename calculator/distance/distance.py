@@ -1,5 +1,6 @@
-from functools import partial
 from dataclasses import dataclass
+from functools import partial
+from typing import Mapping, get_args
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,7 +8,7 @@ import numpy as np
 from calculator.config import PITCH, THRESHOLD
 from calculator.data import Data, Datum
 from calculator.stats import Stats
-from calculator.types import Array, Inch, MicroMeter
+from calculator.types import Array, Inch, Kind, MicroMeter
 
 from .optimize import approximate
 
@@ -84,3 +85,12 @@ def kernel(datum: Datum, pitch: MicroMeter = PITCH, show: bool = False, verbose:
         plt.show()
 
     return distance
+
+
+def calculate_distances(name: str) -> Mapping[Kind, Distance]:
+
+    distances = {}
+    for kind in get_args(Kind):
+        distances[kind] = Distance.calculate(data=Data.load(name=name, kind=kind))
+
+    return distances
