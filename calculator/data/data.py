@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from calculator.types import Array, Kind, N, U
+from calculator.types import Array, Kind, N, SampleName, U
 
 from .utils import calculate_cursor
 
@@ -58,9 +58,9 @@ class Data(tuple):
         self.kind = kind
 
     @classmethod
-    def load(cls, name: str, kind: Kind) -> 'Data':
+    def load(cls, sample_name: SampleName, kind: Kind) -> 'Data':
 
-        filedir = os.path.join(os.getcwd(), 'data', name)
+        filedir = os.path.join(os.getcwd(), 'data', sample_name)
         filename = {
             'sample': 'data',
             'ref-standard': 'ref',

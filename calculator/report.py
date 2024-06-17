@@ -8,17 +8,18 @@ from calculator.config import Config
 from calculator.curvature import Curvature
 from calculator.length import LengthMap
 from calculator.stress import Stress
+from calculator.types import SampleName
 
 
 @dataclass(frozen=True, slots=True)
 class Report:
-    name: str
+    sample_name: SampleName
     config: Config
 
     def create(self) -> None:
 
         length = LengthMap.calculate(
-            name=self.name,
+            sample_name=self.sample_name,
         )
         curvature = Curvature.calculate(
             length=length,
@@ -51,9 +52,13 @@ class Report:
             }).set_index('index', drop=True),
         ])
         frame.index.name = ''
-        frame.columns = pd.MultiIndex.from_product([[self.name], frame.columns])
+        frame.columns = pd.MultiIndex.from_product([[self.sample_name], frame.columns])
 
-        write(frame, name=self.name, sheet_name=self.name)
+        write(
+            frame,
+            sample_name=self.sample_name,
+            sheet_name=self.sample_name,
+        )
 
         # ref-standard sheet
         frame = pd.concat([
@@ -72,7 +77,11 @@ class Report:
         ])
         frame.index.name = ''
 
-        write(frame, name=self.name, sheet_name='ref-standard')
+        write(
+            frame,
+            sample_name=self.sample_name,
+            sheet_name='ref-standard',
+        )
 
         # flat-standard sheet
         frame = pd.concat([
@@ -91,7 +100,11 @@ class Report:
         ])
         frame.index.name = ''
 
-        write(frame, name=self.name, sheet_name='flat-standard')
+        write(
+            frame,
+            sample_name=self.sample_name,
+            sheet_name='flat-standard',
+        )
 
         # config sheet
         frame = pd.DataFrame({
@@ -104,12 +117,16 @@ class Report:
         })
         frame.index = ['']
 
-        write(frame, name=self.name, sheet_name='config')
+        write(
+            frame,
+            sample_name=self.sample_name,
+            sheet_name='config',
+        )
 
 
-def write(frame: pd.DataFrame, name: str, sheet_name: str) -> None:
+def write(frame: pd.DataFrame, sample_name: SampleName, sheet_name: str) -> None:
     """Write frame to selected sheet."""
-    filedir = os.path.join(os.getcwd(), 'data', name)
+    filedir = os.path.join(os.getcwd(), 'data', sample_name)
     filepath = os.path.join(filedir, 'report.xlsx')
 
     mode = 'a' if os.path.isfile(filepath) else 'w'

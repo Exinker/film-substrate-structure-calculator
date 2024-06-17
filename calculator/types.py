@@ -3,6 +3,7 @@ from typing import Literal, NewType, TypeAlias
 from numpy.typing import NDArray
 
 Kind = Literal['sample', 'ref-standard', 'flat-standard']
+SampleName = NewType('SampleName', str)
 
 Array: TypeAlias = NDArray
 N = NewType('N', int)

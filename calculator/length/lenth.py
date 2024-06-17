@@ -8,7 +8,7 @@ import numpy as np
 from calculator.config import PITCH, THRESHOLD
 from calculator.data import Data, Datum
 from calculator.stats import Stats
-from calculator.types import Array, Inch, Kind, MicroMeter
+from calculator.types import Array, Inch, Kind, MicroMeter, SampleName
 
 from .optimize import approximate
 
@@ -19,10 +19,10 @@ class LengthMap(dict):
         return super().__new__(cls, __data)
 
     @classmethod
-    def calculate(cls, name: str) -> 'LengthMap':
+    def calculate(cls, sample_name: SampleName) -> 'LengthMap':
 
         return cls({
-            kind: Length.calculate(data=Data.load(name=name, kind=kind))
+            kind: Length.calculate(data=Data.load(sample_name=sample_name, kind=kind))
             for kind in get_args(Kind)
         })
 
