@@ -13,8 +13,22 @@ from calculator.types import Array, Inch, Kind, MicroMeter
 from .optimize import approximate
 
 
+class LengthMap(dict):
+
+    def __new__(cls, __data: Mapping[Kind, 'Length'], *args, **kwargs):
+        return super().__new__(cls, __data)
+
+    @classmethod
+    def calculate(cls, name: str) -> 'LengthMap':
+
+        return cls({
+            kind: Length.calculate(data=Data.load(name=name, kind=kind))
+            for kind in get_args(Kind)
+        })
+
+
 @dataclass(frozen=True, slots=True)
-class Distance:
+class Length:
     value: MicroMeter | Array[MicroMeter]
 
     @property
@@ -58,7 +72,7 @@ class Distance:
         plt.show()
 
     @classmethod
-    def calculate(cls, data: Data, save: bool = False, show: bool = False, verbose: bool = False) -> 'Distance':
+    def calculate(cls, data: Data, save: bool = False, show: bool = False, verbose: bool = False) -> 'Length':
         handler = partial(kernel, show=show, verbose=verbose)
         value = np.array([handler(datum=datum.truncate(THRESHOLD)) for datum in data])
 
@@ -85,12 +99,3 @@ def kernel(datum: Datum, pitch: MicroMeter = PITCH, show: bool = False, verbose:
         plt.show()
 
     return length
-
-
-def calculate_lengths(name: str) -> Mapping[Kind, Distance]:
-
-    lengths = {}
-    for kind in get_args(Kind):
-        lengths[kind] = Distance.calculate(data=Data.load(name=name, kind=kind))
-
-    return lengths
