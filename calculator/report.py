@@ -16,11 +16,10 @@ class Report:
     config: Config
 
     def create(self) -> None:
-        filedir = os.path.join(os.getcwd(), 'data', self.name)
-        filepath = os.path.join(filedir, 'report.xlsx')
 
-        # calculations
-        length = LengthMap.calculate(name=self.name)
+        length = LengthMap.calculate(
+            name=self.name,
+        )
         curvature = Curvature.calculate(
             length=length,
             config=self.config,
@@ -54,13 +53,7 @@ class Report:
         frame.index.name = ''
         frame.columns = pd.MultiIndex.from_product([[self.name], frame.columns])
 
-        mode = 'a' if os.path.isfile(filepath) else 'w'
-        if_sheet_exists = 'replace' if mode == 'a' else None
-        with pd.ExcelWriter(filepath, mode=mode, if_sheet_exists=if_sheet_exists, engine='openpyxl') as writer:
-            frame.to_excel(
-                writer,
-                sheet_name=self.name,
-            )
+        write(frame, name=self.name, sheet_name=self.name)
 
         # ref-standard sheet
         frame = pd.concat([
@@ -79,13 +72,7 @@ class Report:
         ])
         frame.index.name = ''
 
-        mode = 'a' if os.path.isfile(filepath) else 'w'
-        if_sheet_exists = 'replace' if mode == 'a' else None
-        with pd.ExcelWriter(filepath, mode=mode, if_sheet_exists=if_sheet_exists, engine='openpyxl') as writer:
-            frame.to_excel(
-                writer,
-                sheet_name='ref-standard',
-            )
+        write(frame, name=self.name, sheet_name='ref-standard')
 
         # flat-standard sheet
         frame = pd.concat([
@@ -104,13 +91,7 @@ class Report:
         ])
         frame.index.name = ''
 
-        mode = 'a' if os.path.isfile(filepath) else 'w'
-        if_sheet_exists = 'replace' if mode == 'a' else None
-        with pd.ExcelWriter(filepath, mode=mode, if_sheet_exists=if_sheet_exists, engine='openpyxl') as writer:
-            frame.to_excel(
-                writer,
-                sheet_name='flat-standard',
-            )
+        write(frame, name=self.name, sheet_name='flat-standard')
 
         # config sheet
         frame = pd.DataFrame({
@@ -121,12 +102,20 @@ class Report:
             'E_s/(1 - nu_s), ГПа': [self.config.young_module],
             'Знак σ': [self.config.stress_sign],
         })
+        frame.index = ['']
 
-        mode = 'a' if os.path.isfile(filepath) else 'w'
-        if_sheet_exists = 'replace' if mode == 'a' else None
-        with pd.ExcelWriter(filepath, mode=mode, if_sheet_exists=if_sheet_exists, engine='openpyxl') as writer:
-            frame.to_excel(
-                writer,
-                sheet_name='config',
-                index=None,
-            )
+        write(frame, name=self.name, sheet_name='config')
+
+
+def write(frame: pd.DataFrame, name: str, sheet_name: str) -> None:
+    """Write frame to selected sheet."""
+    filedir = os.path.join(os.getcwd(), 'data', name)
+    filepath = os.path.join(filedir, 'report.xlsx')
+
+    mode = 'a' if os.path.isfile(filepath) else 'w'
+    if_sheet_exists = 'replace' if mode == 'a' else None
+    with pd.ExcelWriter(filepath, mode=mode, if_sheet_exists=if_sheet_exists, engine='openpyxl') as writer:
+        frame.to_excel(
+            writer,
+            sheet_name=sheet_name,
+        )
