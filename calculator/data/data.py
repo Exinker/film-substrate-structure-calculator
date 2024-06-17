@@ -51,6 +51,13 @@ class Datum:
 
 class Data(tuple):
 
+    def __new__(cls, __data: Sequence[Datum], *args, **kwargs):
+        return super().__new__(cls, __data)
+
+    def __init__(self, __data: Sequence[Datum], filedir: FileDir, kind: Kind):
+        self.filedir = filedir
+        self.kind = kind
+
     @classmethod
     def load(cls, name: str, kind: Kind) -> 'Data':
 
@@ -74,10 +81,3 @@ class Data(tuple):
             filedir=filedir,
             kind=kind,
         )
-
-    def __new__(cls, __data: Sequence[Datum], *args, **kwargs):
-        return super().__new__(cls, __data)
-
-    def __init__(self, __data: Sequence[Datum], filedir: FileDir, kind: Kind):
-        self.filedir = filedir
-        self.kind = kind
