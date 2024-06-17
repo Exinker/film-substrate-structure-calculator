@@ -1,10 +1,8 @@
-from pathlib import Path
 from typing import Literal, NewType, TypeAlias
 
 from numpy.typing import NDArray
 
 Kind = Literal['sample', 'ref-standard', 'flat-standard']
-FileDir: TypeAlias = str | Path
 
 Array: TypeAlias = NDArray
 N = NewType('N', int)

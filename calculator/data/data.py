@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from calculator.types import Array, FileDir, Kind, N, U
+from calculator.types import Array, Kind, N, U
 
 from .utils import calculate_cursor
 
@@ -54,8 +54,7 @@ class Data(tuple):
     def __new__(cls, __data: Sequence[Datum], *args, **kwargs):
         return super().__new__(cls, __data)
 
-    def __init__(self, __data: Sequence[Datum], filedir: FileDir, kind: Kind):
-        self.filedir = filedir
+    def __init__(self, __data: Sequence[Datum], kind: Kind):
         self.kind = kind
 
     @classmethod
@@ -78,6 +77,5 @@ class Data(tuple):
 
         return cls(
             [Datum(x=dat.index, y=dat[column]) for column in dat.columns],
-            filedir=filedir,
             kind=kind,
         )
