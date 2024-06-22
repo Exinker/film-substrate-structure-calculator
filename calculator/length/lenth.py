@@ -4,6 +4,7 @@ from typing import Mapping, get_args
 
 import matplotlib.pyplot as plt
 import numpy as np
+from tqdm.notebook import tqdm
 
 from calculator.config import PITCH, THRESHOLD
 from calculator.data import Data, Datum
@@ -19,10 +20,10 @@ class LengthMap(dict):
         return super().__new__(cls, __data)
 
     @classmethod
-    def calculate(cls, sample_name: SampleName) -> 'LengthMap':
+    def calculate(cls, sample_name: SampleName, verbose: bool = False) -> 'LengthMap':
 
         return cls({
-            kind: Length.calculate(data=Data.load(sample_name=sample_name, kind=kind))
+            kind: Length.calculate(data=Data.load(sample_name=sample_name, kind=kind), verbose=verbose)
             for kind in get_args(Kind)
         })
 
@@ -73,8 +74,8 @@ class Length:
 
     @classmethod
     def calculate(cls, data: Data, save: bool = False, show: bool = False, verbose: bool = False) -> 'Length':
-        handler = partial(kernel, show=show, verbose=verbose)
-        value = np.array([handler(datum=datum.truncate(THRESHOLD)) for datum in data])
+        handler = partial(kernel, show=show)
+        value = np.array([handler(datum=datum.truncate(THRESHOLD)) for datum in tqdm(data, desc=f'{data.kind:<15}', disable=not verbose)])
 
         if save:
             raise NotImplementedError
@@ -89,10 +90,10 @@ class Length:
         )
 
 
-def kernel(datum: Datum, pitch: MicroMeter = PITCH, show: bool = False, verbose: bool = False) -> MicroMeter:
+def kernel(datum: Datum, pitch: MicroMeter = PITCH, show: bool = False) -> MicroMeter:
     left, right = datum.split()
 
-    positions = approximate(datum=left, show=show, verbose=verbose), approximate(datum=right, show=show, verbose=verbose)
+    positions = approximate(datum=left, show=show), approximate(datum=right, show=show)
     length = pitch * (max(positions) - min(positions))
 
     if show:

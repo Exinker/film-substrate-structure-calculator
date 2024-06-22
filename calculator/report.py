@@ -1,5 +1,5 @@
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 import pandas as pd
@@ -16,10 +16,11 @@ class Report:
     sample_name: SampleName
     config: Config
 
-    def create(self) -> None:
+    def create(self, verbose: bool = False) -> None:
 
         length = LengthMap.calculate(
             sample_name=self.sample_name,
+            verbose=verbose,
         )
         curvature = Curvature.calculate(
             length=length,

@@ -18,7 +18,7 @@ def gauss(x: Array[N], position: N, width: N, intensity: U) -> Array[U]:
     return f
 
 
-def approximate(datum: Datum, show: bool = False, verbose: bool = False) -> N:
+def approximate(datum: Datum, show: bool = False) -> N:
     """Approximate `datum` by `gauss` shape."""
 
     def loss(x: Array[N], y: Array[U], params) -> float:
@@ -32,10 +32,14 @@ def approximate(datum: Datum, show: bool = False, verbose: bool = False) -> N:
     )
     # assert res['success'], 'Optimization is not succeeded!'
 
-    if verbose:
-        print(res['x'])
-
     if show:
+        ax = plt.gca()
+
+        plt.text(
+            .05, .9,
+            res['x'],
+            transform=ax.transAxes,
+        )
         plt.plot(
             datum.x, datum.y,
             color='black', linestyle='-', linewidth=1, marker='.',

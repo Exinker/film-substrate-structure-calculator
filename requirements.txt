@@ -4,5 +4,6 @@ matplotlib
 numpy
 pandas
 scipy
+tqdm
 
 jupyter
