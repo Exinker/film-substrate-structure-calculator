@@ -73,12 +73,9 @@ class Length:
         plt.show()
 
     @classmethod
-    def calculate(cls, data: Data, save: bool = False, show: bool = False, verbose: bool = False) -> 'Length':
+    def calculate(cls, data: Data, show: bool = False, verbose: bool = False) -> 'Length':
         handler = partial(kernel, show=show)
         value = np.array([handler(datum=datum.truncate(THRESHOLD)) for datum in tqdm(data, desc=f'{data.kind:<15}', disable=not verbose)])
-
-        if save:
-            raise NotImplementedError
 
         return cls(
             value=value,
