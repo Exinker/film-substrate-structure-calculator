@@ -33,13 +33,6 @@ def approximate(datum: Datum, show: bool = False) -> N:
     # assert res['success'], 'Optimization is not succeeded!'
 
     if show:
-        ax = plt.gca()
-
-        plt.text(
-            .05, .9,
-            res['x'],
-            transform=ax.transAxes,
-        )
         plt.plot(
             datum.x, datum.y,
             color='black', linestyle='-', linewidth=1, marker='.',
