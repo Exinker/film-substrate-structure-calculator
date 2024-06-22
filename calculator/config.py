@@ -1,10 +1,11 @@
 import dataclasses
 import json
+import os
 from dataclasses import dataclass
 from typing import Literal
 
 from calculator.exceptions import ConfigLoadError
-from calculator.types import GPa, MicroMeter, ReciprocalMeter
+from calculator.types import GPa, MicroMeter, ReciprocalMeter, SampleName
 
 
 # --------        detector        --------
@@ -26,19 +27,21 @@ class Config:
     young_module: GPa
     stress_sign: Literal[-1, +1]
 
-    def save(self, name: str = 'config') -> None:
+    def save(self, sample_name: SampleName) -> None:
         dat = dataclasses.asdict(self)
 
-        with open(f'{name}.json', 'w') as file:
+        filepath = os.path.join(os.getcwd(), 'data', sample_name, 'config.json')
+        with open(filepath, 'w') as file:
             json.dump(dat, file)
 
     @classmethod
-    def load(cls, name: str = 'config') -> 'Config':
+    def load(cls, sample_name: SampleName) -> 'Config':
 
+        filepath = os.path.join(os.getcwd(), 'data', sample_name, 'config.json')
         try:
-            with open(f'{name}.json', 'r') as file:
+            with open(filepath, 'r') as file:
                 dat = json.load(file)
         except FileNotFoundError:
-            raise ConfigLoadError('Файл `config.json` не найден!')
+            raise ConfigLoadError(f'Файл {filepath} не найден!')
 
         return cls(**dat)
