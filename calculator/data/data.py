@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from calculator.config import VERSION, DataKind
 from calculator.data.utils import calculate_cursor
-from calculator.types import Array, Kind, N, SampleName, U
+from calculator.types import Array, Frame, N, SampleName, U
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,28 +54,58 @@ class Data(tuple):
     def __new__(cls, __data: Sequence[Datum], *args, **kwargs):
         return super().__new__(cls, __data)
 
-    def __init__(self, __data: Sequence[Datum], kind: Kind):
+    def __init__(self, __data: Sequence[Datum], kind: DataKind):
         self.kind = kind
 
     @classmethod
-    def load(cls, sample_name: SampleName, kind: Kind) -> 'Data':
-
-        filedir = os.path.join(os.getcwd(), 'data', sample_name)
-        filename = {
+    def load(cls, sample_name: SampleName, kind: DataKind) -> 'Data':
+        kind = {
             'sample': 'data',
             'ref-standard': 'ref',
             'flat-standard': 'flat',
         }.get(kind, kind)
-        filepath = os.path.join(filedir, f'{filename}.xlsx')
 
-        dat = pd.read_excel(
-            filepath,
-            header=None,
-            index_col=0,
-            engine='openpyxl',
+        dat = cls._load(
+            filedir=os.path.join(os.getcwd(), 'data', sample_name),
+            kind=kind,
         )
 
         return cls(
             [Datum(x=dat.index, y=dat[column]) for column in dat.columns],
             kind=kind,
         )
+
+    @staticmethod
+    def _load(filedir: str, kind: str) -> Frame:
+
+        if VERSION == '0.1':
+            filepath = os.path.join(filedir, f'{kind}.xlsx')
+
+            dat = pd.read_excel(
+                filepath,
+                header=None,
+                index_col=0,
+                engine='openpyxl',
+            )
+            return dat
+
+        if VERSION == '0.2':
+
+            data = []
+            for filename in os.listdir(os.path.join(filedir, f'{kind}')):
+
+                filepath = os.path.join(filedir, f'{kind}', filename)
+                with open(filepath, 'r') as file:
+                    datum = pd.read_csv(
+                        file,
+                        names=['wavelength', 'intensity', 'crystal', 'clipped'],
+                        sep=r'\t',
+                        engine='python',
+                    )
+
+                    data.append(tuple(datum['intensity']))
+
+            dat = pd.DataFrame(np.array(data).T)
+            return dat
+
+        raise ValueError(f'Version {VERSION} is not supported yet!')

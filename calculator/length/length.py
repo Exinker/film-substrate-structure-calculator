@@ -6,24 +6,39 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm.notebook import tqdm
 
-from calculator.config import PITCH, THRESHOLD
+from calculator.config import DETECTOR_PITCH, DETECTOR_THRESHOLD, DataKind
 from calculator.data import Data, Datum
 from calculator.length.optimize import approximate
 from calculator.stats import Stats
-from calculator.types import Array, Inch, Kind, MicroMeter, SampleName
+from calculator.types import Array, Inch, MicroMeter, SampleName
 
 
 class LengthMap(dict):
 
-    def __new__(cls, __data: Mapping[Kind, 'Length'], *args, **kwargs):
+    def __new__(
+        cls,
+        __data: Mapping[DataKind, 'Length'],
+        *args,
+        **kwargs,
+    ):
         return super().__new__(cls, __data)
 
     @classmethod
-    def calculate(cls, sample_name: SampleName, verbose: bool = False) -> 'LengthMap':
+    def calculate(
+        cls,
+        sample_name: SampleName,
+        verbose: bool = False,
+    ) -> 'LengthMap':
 
         return cls({
-            kind: Length.calculate(data=Data.load(sample_name=sample_name, kind=kind), verbose=verbose)
-            for kind in get_args(Kind)
+            kind: Length.calculate(
+                data=Data.load(
+                    sample_name=sample_name,
+                    kind=kind,
+                ),
+                verbose=verbose,
+            )
+            for kind in get_args(DataKind)
         })
 
 
@@ -72,9 +87,19 @@ class Length:
         plt.show()
 
     @classmethod
-    def calculate(cls, data: Data, show: bool = False, verbose: bool = False) -> 'Length':
+    def calculate(
+        cls,
+        data: Data,
+        show: bool = False,
+        verbose: bool = False,
+    ) -> 'Length':
         handler = partial(kernel, show=show)
-        value = np.array([handler(datum=datum.truncate(THRESHOLD)) for datum in tqdm(data, desc=f'{data.kind:<15}', disable=not verbose)])
+        value = np.array([
+            handler(
+                datum=datum.truncate(DETECTOR_THRESHOLD),
+            )
+            for datum in tqdm(data, desc=f'{data.kind:<15}', disable=not verbose)
+        ])
 
         return cls(
             value=value,
@@ -86,7 +111,11 @@ class Length:
         )
 
 
-def kernel(datum: Datum, pitch: MicroMeter = PITCH, show: bool = False) -> MicroMeter:
+def kernel(
+    datum: Datum,
+    pitch: MicroMeter = DETECTOR_PITCH,
+    show: bool = False,
+) -> MicroMeter:
     left, right = datum.split()
 
     positions = approximate(datum=left, show=show), approximate(datum=right, show=show)

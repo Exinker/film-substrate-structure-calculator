@@ -1,11 +1,14 @@
-from typing import Literal, NewType, TypeAlias
+from typing import NewType, TypeAlias
 
 from numpy.typing import NDArray
+import pandas as pd
 
-Kind = Literal['sample', 'ref-standard', 'flat-standard']
+
 SampleName = NewType('SampleName', str)
 
 Array: TypeAlias = NDArray
+Frame: TypeAlias = pd.DataFrame
+
 N = NewType('N', int)
 U = NewType('U', float)
 

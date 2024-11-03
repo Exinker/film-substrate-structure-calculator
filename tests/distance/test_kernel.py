@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from calculator.config import PITCH
+from calculator.config import DETECTOR_PITCH
 from calculator.data import Datum
 from calculator.length import kernel, gauss
 from calculator.types import N, U
@@ -32,7 +32,7 @@ def test__calculate(params: tuple[tuple[N, N, U], tuple[N, N, U]]):
 
     datum = emulate_datum(params=params)
 
-    length = PITCH * (max(positions) - min(positions))
+    length = DETECTOR_PITCH * (max(positions) - min(positions))
     length_hat = kernel(datum=datum)
 
     assert np.isclose(length, length_hat, atol=1e-9)

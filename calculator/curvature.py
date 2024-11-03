@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from calculator.config import Config
+from calculator.config import Config, VERSION
 from calculator.length import LengthMap
 from calculator.stats import Stats
 from calculator.types import Array, ReciprocalMeter
@@ -16,15 +16,30 @@ class Curvature:
 
     @classmethod
     def calculate(cls, length: LengthMap, config: Config) -> 'Curvature':
-        c_ref_standart = config.curvature_ref_standart
 
-        d = length['sample'].value
-        d_flat_standard = length['flat-standard'].stats.value
-        d_ref_standard = length['ref-standard'].stats.value
+        if VERSION == '0.1':
+            c_ref_standart = config.curvature_ref_standart
 
-        return cls(
-            value=c_ref_standart * (d - d_flat_standard) / (d_ref_standard - d_flat_standard),
-        )
+            l_sample = length['sample'].value
+            l_flat_standard = length['flat-standard'].stats.value
+            l_ref_standard = length['ref-standard'].stats.value
+
+            return cls(
+                value=c_ref_standart * (l_sample - l_flat_standard) / (l_ref_standard - l_flat_standard),
+            )
+
+        if VERSION == '0.2':
+            h = config.h
+
+            l_sample = length['sample'].value
+            l_flat_standard = length['flat-standard'].stats.value
+            l_h = length['h'].stats.value
+
+            return cls(
+                value=(l_sample - l_flat_standard) / (2*h*l_h/10**6),
+            )
+
+        raise ValueError(f'Version {VERSION} is not supported yet!')
 
     def __str__(self) -> str:
         return '[{}]'.format(

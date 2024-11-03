@@ -1,31 +1,18 @@
 import dataclasses
 import json
 import os
+from abc import ABC
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, Self
 
 from calculator.exceptions import ConfigLoadError
 from calculator.types import GPa, MicroMeter, ReciprocalMeter, SampleName
 
-
-# --------        detector        --------
-PITCH = 12.5  # detector's width
-THRESHOLD = 70  # detector's max output signal
+DataKindV01 = Literal['sample', 'flat-standard', 'ref-standard']
+DataKindV02 = Literal['sample', 'flat-standard', 'h']
 
 
-# --------        report        --------
-N_DIGITS = 2
-
-
-# --------        experiment        --------
-@dataclass(frozen=True, slots=True)
-class Config:
-    curvature_ref_standart: ReciprocalMeter
-    curvature_flat_standart: ReciprocalMeter
-    thickness_film: MicroMeter
-    thickness_substrate: MicroMeter
-    young_module: GPa
-    stress_sign: Literal[-1, +1]
+class ConfigABC:
 
     def save(self, sample_name: SampleName) -> None:
         dat = dataclasses.asdict(self)
@@ -35,7 +22,7 @@ class Config:
             json.dump(dat, file)
 
     @classmethod
-    def load(cls, sample_name: SampleName) -> 'Config':
+    def load(cls, sample_name: SampleName) -> Self:
 
         filepath = os.path.join(os.getcwd(), 'data', sample_name, 'config.json')
         try:
@@ -45,3 +32,23 @@ class Config:
             raise ConfigLoadError(f'Файл {filepath} не найден!')
 
         return cls(**dat)
+
+
+@dataclass(frozen=True, slots=True)
+class ConfigV01(ConfigABC):
+    curvature_ref_standart: ReciprocalMeter
+    curvature_flat_standart: ReciprocalMeter
+    thickness_film: MicroMeter
+    thickness_substrate: MicroMeter
+    young_module: GPa
+    stress_sign: Literal[-1, +1]
+
+
+@dataclass(frozen=True, slots=True)
+class ConfigV02(ConfigABC):
+    h: MicroMeter
+    curvature_flat_standart: ReciprocalMeter
+    thickness_film: MicroMeter
+    thickness_substrate: MicroMeter
+    young_module: GPa
+    stress_sign: Literal[-1, +1]
