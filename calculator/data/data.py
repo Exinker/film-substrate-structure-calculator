@@ -6,9 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from calculator.data.utils import calculate_cursor
 from calculator.types import Array, Kind, N, SampleName, U
-
-from .utils import calculate_cursor
 
 
 @dataclass(frozen=True, slots=True)
