@@ -1,12 +1,13 @@
-import numpy as np
 from dataclasses import dataclass, field
-from scipy import stats
 from typing import ClassVar, NewType
+
+import numpy as np
+from scipy import stats
 
 from calculator.config import N_DIGITS
 from calculator.types import Array
 
-T = NewType('T', int)
+T = NewType('T', float)
 
 
 @dataclass(frozen=True, slots=True)

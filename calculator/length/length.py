@@ -8,10 +8,9 @@ from tqdm.notebook import tqdm
 
 from calculator.config import PITCH, THRESHOLD
 from calculator.data import Data, Datum
+from calculator.length.optimize import approximate
 from calculator.stats import Stats
 from calculator.types import Array, Inch, Kind, MicroMeter, SampleName
-
-from .optimize import approximate
 
 
 class LengthMap(dict):
