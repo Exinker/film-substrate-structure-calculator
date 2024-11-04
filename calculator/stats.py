@@ -4,10 +4,12 @@ from typing import ClassVar, NewType
 import numpy as np
 from scipy import stats
 
-from calculator.config import N_DIGITS
 from calculator.types import Array
 
+
 T = NewType('T', float)
+
+N_DIGITS = 2
 
 
 @dataclass(frozen=True, slots=True)

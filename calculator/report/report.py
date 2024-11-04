@@ -126,7 +126,7 @@ class ReportV01(ReportABC):
         write(
             frame,
             sample_name=self.sample_name,
-            sheet_name='flat-standard',
+            sheet_name='I_0',
         )
 
         # ref-standard sheet
@@ -152,7 +152,7 @@ class ReportV01(ReportABC):
         write(
             frame,
             sample_name=self.sample_name,
-            sheet_name='ref-standard',
+            sheet_name='I_эт',
         )
 
         # config sheet
@@ -241,7 +241,7 @@ class ReportV02(ReportABC):
         write(
             frame,
             sample_name=self.sample_name,
-            sheet_name='I0',
+            sheet_name='I_0',
         )
 
         # h sheet

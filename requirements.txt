@@ -1,7 +1,7 @@
-openpyxl
-
+python_dotenv-1.0.1
 matplotlib
 numpy
+openpyxl
 pandas
 scipy
 tqdm
