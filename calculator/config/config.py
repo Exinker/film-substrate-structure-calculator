@@ -2,7 +2,7 @@ import dataclasses
 import json
 import os
 from dataclasses import dataclass
-from typing import Literal, Self
+from typing import Literal
 
 from calculator.exceptions import ConfigLoadError
 from calculator.types import GPa, MicroMeter, ReciprocalMeter, SampleName
@@ -21,7 +21,7 @@ class ConfigABC:
             json.dump(dat, file)
 
     @classmethod
-    def load(cls, sample_name: SampleName) -> Self:
+    def load(cls, sample_name: SampleName) -> 'ConfigABC':
 
         filepath = os.path.join(os.getcwd(), 'data', sample_name, 'config.json')
         try:
