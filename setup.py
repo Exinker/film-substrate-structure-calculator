@@ -30,5 +30,5 @@ setup(
         item.strip() for item in open('requirements.txt', 'r').readlines()
         if item.strip()
     ],
-    python_requires='>=3.11',
+    python_requires='>=3.10',
 )

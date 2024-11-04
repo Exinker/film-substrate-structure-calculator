@@ -174,8 +174,6 @@ class ReportV01(ReportABC):
 
 
 class ReportV02(ReportABC):
-    sample_name: SampleName
-    config: Config
 
     def publish(self) -> None:
 
