@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm.notebook import tqdm
 
-from calculator.config import DETECTOR_PITCH, DETECTOR_THRESHOLD, DataKind
+from calculator.config import DataKind, DETECTOR_PITCH, DETECTOR_THRESHOLD
 from calculator.data import Data, Datum
 from calculator.length.optimize import approximate
 from calculator.stats import Stats

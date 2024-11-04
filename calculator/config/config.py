@@ -1,7 +1,6 @@
 import dataclasses
 import json
 import os
-from abc import ABC
 from dataclasses import dataclass
 from typing import Literal, Self
 
