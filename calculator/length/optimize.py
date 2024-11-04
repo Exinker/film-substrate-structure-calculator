@@ -28,7 +28,7 @@ def approximate(datum: Datum, show: bool = False) -> N:
 
     res = optimize.minimize(
         partial(loss, datum.x, datum.y),
-        x0=[calculate_cursor(x=datum.x, y=datum.y), 20, np.nansum(datum.y)],
+        x0=[calculate_cursor(x=datum.x, y=datum.y, kind='maximum'), 20, np.nansum(datum.y)],
     )
     # assert res['success'], 'Optimization is not succeeded!'
 

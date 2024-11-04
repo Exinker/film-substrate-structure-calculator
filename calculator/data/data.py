@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from calculator.config import VERSION, DataKind
+from calculator.config import DataKind, VERSION
 from calculator.data.utils import calculate_cursor
 from calculator.types import Array, Frame, N, SampleName, U
 
@@ -33,7 +33,11 @@ class Datum:
         return Datum(x=x, y=y)
 
     def split(self, cursor: int | None = None) -> tuple['Datum', 'Datum']:
-        cursor = cursor or calculate_cursor(x=self.x, y=self.y)
+        cursor = cursor or calculate_cursor(
+            x=self.x,
+            y=self.y,
+            kind='center mass',
+        )
 
         return self[:cursor], self[cursor:]
 
