@@ -63,27 +63,28 @@ class Data(tuple):
 
     @classmethod
     def load(cls, sample_name: SampleName, kind: DataKind) -> 'Data':
-        kind = {
-            'sample': 'data',
-            'ref-standard': 'ref',
-            'flat-standard': 'flat',
-        }.get(kind, kind)
+        filename = {
+            'sample': sample_name,
+            'ref-standard': 'Iэт',
+            'flat-standard': 'I0',
+            'h': 'h',
+        }.get(kind, None)
 
         dat = cls._load(
             filedir=os.path.join(os.getcwd(), 'data', sample_name),
-            kind=kind,
+            filename=filename,
         )
 
         return cls(
             [Datum(x=dat.index, y=dat[column]) for column in dat.columns],
-            kind=kind,
+            kind=filename,
         )
 
     @staticmethod
-    def _load(filedir: str, kind: str) -> Frame:
+    def _load(filedir: str, filename: str) -> Frame:
 
         if VERSION == '0.1':
-            filepath = os.path.join(filedir, f'{kind}.xlsx')
+            filepath = os.path.join(filedir, f'{filename}.xlsx')
 
             dat = pd.read_excel(
                 filepath,
@@ -96,9 +97,9 @@ class Data(tuple):
         if VERSION == '0.2':
 
             data = []
-            for filename in os.listdir(os.path.join(filedir, f'{kind}')):
+            for _ in os.listdir(os.path.join(filedir, f'{filename}')):
 
-                filepath = os.path.join(filedir, f'{kind}', filename)
+                filepath = os.path.join(filedir, f'{filename}', _)
                 with open(filepath, 'r') as file:
                     datum = pd.read_csv(
                         file,
