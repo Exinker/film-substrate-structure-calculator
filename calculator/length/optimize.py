@@ -39,7 +39,7 @@ def approximate(datum: Datum, show: bool = False) -> N:
                 kind='maximum',
             ),
             20,
-            np.nansum(datum.y - np.nanmedian(datum.y)),
+            np.nansum(datum.y - np.nanmedian(datum.y)) + 100*len(np.argwhere(np.isnan(datum.y))),
             np.nanmedian(datum.y),
         ],
     )
