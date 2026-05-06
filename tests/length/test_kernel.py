@@ -7,7 +7,10 @@ from calculator.length import kernel, gauss
 from calculator.types import N, U
 
 
-def emulate_datum(params: tuple[tuple[N, N, U], tuple[N, N, U]], n: int = 2048) -> Datum:
+def emulate_datum(
+    params: tuple[tuple[N, N, U], tuple[N, N, U]],
+    n: int = 2048,
+) -> Datum:
 
     x = np.arange(n)
     y = np.zeros(n)
@@ -24,7 +27,10 @@ def emulate_datum(params: tuple[tuple[N, N, U], tuple[N, N, U]], n: int = 2048) 
 @pytest.mark.parametrize(
     'intensity', [100, 500, 1_000, 10_000],
 )
-def test_kernel(width: N, intensity: U):
+def test_kernel(
+    width: N,
+    intensity: U,
+):
     positions = [1/4*2580, 3/4*2580]
     datum = emulate_datum(
         params=tuple(

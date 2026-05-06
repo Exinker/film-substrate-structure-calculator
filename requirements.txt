@@ -7,3 +7,5 @@ scipy
 tqdm
 
 jupyter
+
+-e .
