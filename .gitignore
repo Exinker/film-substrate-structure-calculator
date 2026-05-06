@@ -6,6 +6,7 @@ __pycache__/
 .git/
 .mypy_cache/
 .pytest_cache/
+.venv/
 .vscode/
 .VSCodeCounter/
 *.egg-info/

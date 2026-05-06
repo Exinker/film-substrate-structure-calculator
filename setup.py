@@ -28,7 +28,7 @@ setup(
     # requires
     install_requires=[
         item.strip() for item in open('requirements.txt', 'r').readlines()
-        if item.strip()
+        if item.strip() and not item.startswith('-e')
     ],
     python_requires='>=3.10',
 )

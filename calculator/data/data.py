@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from calculator.config import DataKind, VERSION
+from calculator.config import DataKind
 from calculator.data.utils import calculate_cursor
 from calculator.types import Array, Frame, N, SampleName, U
 
@@ -65,8 +65,8 @@ class Data(tuple):
     def load(cls, sample_name: SampleName, kind: DataKind) -> 'Data':
         filename = {
             'sample': sample_name,
-            'ref-standard': 'Iэт',
-            'flat-standard': 'I0',
+            'ref-standard': 'le',
+            'flat-standard': 'l0',
             'h': 'h',
         }.get(kind, None)
 
@@ -83,34 +83,19 @@ class Data(tuple):
     @staticmethod
     def _load(filedir: str, filename: str) -> Frame:
 
-        if VERSION == '0.1':
-            filepath = os.path.join(filedir, f'{filename}.xlsx')
+        data = []
+        for _ in os.listdir(os.path.join(filedir, f'{filename}')):
 
-            dat = pd.read_excel(
-                filepath,
-                header=None,
-                index_col=0,
-                engine='openpyxl',
-            )
-            return dat
+            filepath = os.path.join(filedir, f'{filename}', _)
+            with open(filepath, 'r') as file:
+                datum = pd.read_csv(
+                    file,
+                    names=['wavelength', 'intensity', 'crystal', 'clipped'],
+                    sep=r'\t',
+                    engine='python',
+                )
 
-        if VERSION == '0.2':
+                data.append(tuple(datum['intensity']))
 
-            data = []
-            for _ in os.listdir(os.path.join(filedir, f'{filename}')):
-
-                filepath = os.path.join(filedir, f'{filename}', _)
-                with open(filepath, 'r') as file:
-                    datum = pd.read_csv(
-                        file,
-                        names=['wavelength', 'intensity', 'crystal', 'clipped'],
-                        sep=r'\t',
-                        engine='python',
-                    )
-
-                    data.append(tuple(datum['intensity']))
-
-            dat = pd.DataFrame(np.array(data).T)
-            return dat
-
-        raise ValueError(f'Version {VERSION} is not supported yet!')
+        dat = pd.DataFrame(np.array(data).T)
+        return dat
