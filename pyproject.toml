@@ -38,6 +38,9 @@ dependencies = [
 ]
 requires-python = ">=3.12"
 
+[project.scripts]
+launch = "scripts.launch:run"
+
 [dependency-groups]
 linting = [
     "flake8>=7.1.1",
@@ -59,7 +62,13 @@ dev = [
 [tool.hatch.version]
 source = "vcs"
 
+[tool.hatch.build.targets.sdist]
+force-include = [
+    "scripts",
+]
+
 [tool.hatch.build.targets.wheel]
 packages = [
     "src/calculator",
+    "scripts",
 ]
