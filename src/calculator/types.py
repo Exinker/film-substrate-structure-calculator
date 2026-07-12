@@ -1,7 +1,7 @@
 from typing import NewType, TypeAlias
 
-from numpy.typing import NDArray
 import pandas as pd
+from numpy.typing import NDArray
 
 
 SampleName = NewType('SampleName', str)

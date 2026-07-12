@@ -1,7 +1,7 @@
-from .length import Length, LengthMap, kernel
+from .length import Length, LengthMap
 from .optimize import gauss
 
 __all__ = [
-    Length, LengthMap, kernel,
+    Length, LengthMap,
     gauss,
 ]

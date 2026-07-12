@@ -4,6 +4,7 @@ import os
 from dataclasses import dataclass
 from typing import Literal
 
+from calculator import ROOT
 from calculator.exceptions import ConfigLoadError
 from calculator.types import GPa, MicroMeter, ReciprocalMeter, SampleName
 
@@ -16,14 +17,14 @@ class ConfigABC:
     def save(self, sample_name: SampleName) -> None:
         dat = dataclasses.asdict(self)
 
-        filepath = os.path.join(os.getcwd(), 'data', sample_name, 'config.json')
+        filepath = os.path.join(ROOT, 'data', sample_name, 'config.json')
         with open(filepath, 'w') as file:
             json.dump(dat, file)
 
     @classmethod
     def load(cls, sample_name: SampleName) -> 'ConfigABC':
 
-        filepath = os.path.join(os.getcwd(), 'data', sample_name, 'config.json')
+        filepath = os.path.join(ROOT, 'data', sample_name, 'config.json')
         try:
             with open(filepath, 'r') as file:
                 dat = json.load(file)
