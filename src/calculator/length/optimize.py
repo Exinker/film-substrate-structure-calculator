@@ -24,36 +24,18 @@ def gauss(
     return f
 
 
-def estimate_position(
-    datum: Datum,
-    peak: BlinkPeak,
-) -> N:
-
-    index = np.isnan(datum.y[peak.number])
-    if np.any(index) and np.sum(index) > 5:
-        number = peak.number[index]
-        return int(np.round(np.mean(number)))
-
-    return peak.maxima[0]
-
-
 def estimate_amplitude(
     datum: Datum,
     peak: BlinkPeak,
-    position: N,
 ) -> U:
 
-    index = np.isfinite(datum.y[peak.number])
-    number = peak.number[index]
-    x = datum.x[number]
-    y = datum.y[number]
+    x = datum.x[peak.number[peak.tail]]
+    y = datum.y[peak.number[peak.tail]]
 
-    x0 = position
+    x0 = np.mean(peak.maxima)
     g = gauss(x, x0, WIDTH, 1)
 
-    integral = np.dot(y, g) / np.dot(g, g)
-
-    amplitude = integral / (np.sqrt(2*np.pi) * WIDTH)
+    amplitude = np.dot(y, g) / np.dot(g, g)
     return amplitude
 
 
@@ -67,16 +49,12 @@ def optimize(
 
         return np.sqrt(np.nansum((y - y_hat)**2))
 
-    position = estimate_position(
-        datum=datum,
-        peak=peak,
-    )
+    position = np.mean(peak.maxima)
     amplitude = estimate_amplitude(
         datum=datum,
         peak=peak,
-        position=position,
     )
-    res = minimize(
+    result = minimize(
         partial(loss, datum.x[peak.number], datum.y[peak.number]),
         x0=[
             position,
@@ -93,4 +71,4 @@ def optimize(
     )
     # assert res['success'], 'Optimization is not succeeded!'
 
-    return res
+    return result

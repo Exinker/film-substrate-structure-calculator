@@ -63,7 +63,11 @@ class Length:
     def stats(self) -> Stats:
         return Stats.calculate(self.value)
 
-    def show(self, figsize: tuple[Inch, Inch] | None = None, info: bool = False) -> None:
+    def show(
+        self,
+        figsize: tuple[Inch, Inch] | None = None,
+        info: bool = False,
+    ) -> None:
         figsize = figsize or (6, 4)
 
         fig, ax = plt.subplots(figsize=figsize, tight_layout=True)
@@ -146,43 +150,73 @@ def kernel(
     length = pitch * (max(positions) - min(positions))
 
     if show:
-        fig, axs = plt.subplots(ncols=2, figsize=(12, 4))
+        remainder = datum.y
 
-        for ax, res, peak in zip(axs, results, peaks):
-            plt.sca(ax)
+        fig, (ax_left, ax_right) = plt.subplots(ncols=2, figsize=(12, 4))
 
+        plt.sca(ax_left)
+        plt.plot(
+            datum.x, datum.y,
+            color='black', linestyle='none', marker='.',
+        )
+        for i, (peak, result) in enumerate(zip(peaks, results)):
             plt.plot(
-                datum.x, datum.y,
-                color='black', linestyle='none', marker='.',
-            )
-            plt.plot(
-                peak.number, gauss(peak.number, *res['x'][:3]) + res['x'][3],
+                peak.number, gauss(peak.number, *result['x'][:3]) + result['x'][3],
                 color='red', linestyle='-', linewidth=1,
             )
             plt.axvline(
-                res['x'][0],
+                result['x'][0],
                 color='red', linestyle='--', linewidth=1,
             )
             plt.axvspan(
                 *peak.minima,
                 color='red', alpha=.1,
             )
-            plt.text(
-                0.05, 0.95,
-                '\n'.join([
-                    '' if res['success'] else 'Optimization is not succeeded!',
-                    '$x_{{0}}$: {:.2f}'.format(res['x'][0]),
-                    '$w$: {:.2f}'.format(res['x'][1]),
-                    '$I$: {:.2f}'.format(res['x'][2]),
-                    '$b$: {:.4f}'.format(res['x'][3]),
-                ]),
-                transform=plt.gca().transAxes,
-                ha='left', va='top',
-            )
+            text = '\n'.join([
+                '' if result['success'] else 'Optimization is not succeeded!',
+                '$x_{{0}}$: {:.2f}'.format(result['x'][0]),
+                '$w$: {:.2f}'.format(result['x'][1]),
+                '$A$: {:.2f}'.format(result['x'][2]),
+                '$b$: {:.4f}'.format(result['x'][3]),
+            ])
+            if i == 0:
+                plt.text(
+                    0.025, 0.975,
+                    text,
+                    transform=plt.gca().transAxes,
+                    ha='left', va='top',
+                )
+            else:
+                plt.text(
+                    0.975, 0.975,
+                    text,
+                    transform=plt.gca().transAxes,
+                    ha='right', va='top',
+                )
 
-            plt.xlabel('Номер отсчета')
-            plt.ylabel(r'$I$, %')
-            plt.grid(color='grey', linestyle=':')
+            remainder[peak.number] -= gauss(peak.number, *result['x'][:3])
+
+        plt.xlabel('Номер отсчета')
+        plt.ylabel(r'$I$, %')
+        plt.grid(color='grey', linestyle=':')
+
+        plt.sca(ax_right)
+        plt.plot(
+            datum.x, remainder,
+            color='black', linestyle='none', marker='.',
+        )
+        for i, (peak, result) in enumerate(zip(peaks, results)):
+            plt.axvline(
+                result['x'][0],
+                color='red', linestyle='--', linewidth=1,
+            )
+            plt.axvspan(
+                *peak.minima,
+                color='red', alpha=.1,
+            )
+        plt.xlabel('Номер отсчета')
+        plt.ylabel(r'$I$, %')
+        plt.grid(color='grey', linestyle=':')
 
         plt.show()
 
@@ -202,6 +236,7 @@ def find_peaks(
             y=datum.y,
             window=window,
         ),
+        clipped=np.isnan(datum.y),
     )
 
     blinks = draft_blinks(
@@ -213,6 +248,11 @@ def find_peaks(
             # except_sloped_peak=False,
         ),
     )
+
+    delta = 100
+    for blink in blinks:
+        left, right = blink.minima
+        blink.minima = (max(left - delta, 0), min(right + delta, spectrum.n_numbers-1))
 
     if show:
         fig, ax = plt.subplots(figsize=(12, 4))
@@ -231,7 +271,7 @@ def find_peaks(
         )
         for blink in blinks:
             plt.axvline(
-                blink.maxima[-1],
+                np.mean(blink.maxima),
                 color='red', linestyle=':',
             )
 
@@ -241,7 +281,6 @@ def find_peaks(
         plt.legend()
 
         plt.show()
-
 
     if len(blinks) < 2:
         raise ValueError('Not enough peaks found!')
@@ -276,6 +315,6 @@ def smooth_intensity(
 
     y_hat = signal.savgol_filter(y, window_length=window, polyorder=1)
     if np.any(index):
-        y_hat[index] = np.interp(x[index], x[~index], y_hat[~index])
+        y_hat[index] = THRESHOLD
 
     return y_hat

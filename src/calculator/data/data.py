@@ -93,5 +93,4 @@ class Data(tuple):
                 data.append(tuple(datum['intensity']))
 
         dat = pd.DataFrame(np.array(data).T)
-        dat = dat.replace(0, np.nan)
         return dat

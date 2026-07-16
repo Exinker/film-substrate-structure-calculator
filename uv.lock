@@ -211,7 +211,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "python-dotenv", specifier = "==1.0.1" },
     { name = "scipy", specifier = ">=1.14.1" },
-    { name = "spectrumlab", git = "https://github.com/Exinker/spectrumlab?tag=0.9.3dev4" },
+    { name = "spectrumlab", git = "https://github.com/Exinker/spectrumlab?tag=0.9.3" },
     { name = "tqdm", specifier = ">=4.67.1" },
 ]
 
@@ -2357,8 +2357,8 @@ wheels = [
 
 [[package]]
 name = "spectrumlab"
-version = "0.9.3rc1.dev2+g006b69d74"
-source = { git = "https://github.com/Exinker/spectrumlab?tag=0.9.3dev4#006b69d74d754f364e200a6de6f4c8652b223f8c" }
+version = "0.9.3"
+source = { git = "https://github.com/Exinker/spectrumlab?tag=0.9.3#818065b8c37d753be948b58dfe83bcda681ba761" }
 dependencies = [
     { name = "matplotlib" },
     { name = "numpy" },

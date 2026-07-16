@@ -76,4 +76,4 @@ packages = [
 ]
 
 [tool.uv.sources]
-spectrumlab = { git = "https://github.com/Exinker/spectrumlab", tag = "0.9.3dev4" }
+spectrumlab = { git = "https://github.com/Exinker/spectrumlab", tag = "0.9.3" }
