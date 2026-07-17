@@ -6,13 +6,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from calculator import ROOT
 from calculator.config import DataKind
-from calculator.data.utils import calculate_cursor
 from calculator.types import Array, Frame, N, SampleName, U
 
 
 @dataclass(frozen=True, slots=True)
 class Datum:
+
     x: Array[N]
     y: Array[U]
 
@@ -25,21 +26,14 @@ class Datum:
         plt.show()
 
     def truncate(self, __max_value: U) -> 'Datum':
-        x, y = self.x.copy(), self.y.copy()
 
-        mask = y >= __max_value
-        y[mask] = np.nan
+        y_truncated = np.array(self.y)
+        y_truncated[self.y >= __max_value] = np.nan
 
-        return Datum(x=x, y=y)
-
-    def split(self, cursor: int | None = None) -> tuple['Datum', 'Datum']:
-        cursor = cursor or calculate_cursor(
-            x=self.x,
-            y=self.y,
-            kind='center mass',
+        return Datum(
+            x=np.array(self.x),
+            y=y_truncated,
         )
-
-        return self[:cursor], self[cursor:]
 
     def __getitem__(self, index: slice) -> 'Datum':
         cls = self.__class__
@@ -59,6 +53,7 @@ class Data(tuple):
         return super().__new__(cls, __data)
 
     def __init__(self, __data: Sequence[Datum], kind: DataKind):
+
         self.kind = kind
 
     @classmethod
@@ -68,10 +63,10 @@ class Data(tuple):
             'ref-standard': 'le',
             'flat-standard': 'l0',
             'h': 'h',
-        }.get(kind, None)
+        }[kind]
 
         dat = cls._load(
-            filedir=os.path.join(os.getcwd(), 'data', sample_name),
+            filedir=os.path.join(ROOT, 'data', sample_name),
             filename=filename,
         )
 

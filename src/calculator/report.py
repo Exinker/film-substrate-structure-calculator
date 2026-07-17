@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
+from calculator import ROOT
 from calculator.config import Config
 from calculator.curvature import Curvature
 from calculator.length import LengthMap
@@ -20,7 +21,6 @@ class Report:
 
         length = LengthMap.calculate(
             sample_name=self.sample_name,
-            verbose=verbose,
         )
         curvature = Curvature.calculate(
             length=length,
@@ -126,8 +126,8 @@ class Report:
 
 
 def write(frame: pd.DataFrame, sample_name: SampleName, sheet_name: str) -> None:
-    """Write frame to selected sheet."""
-    filedir = os.path.join(os.getcwd(), 'data', sample_name)
+    """Write frame to selected sheet"""
+    filedir = os.path.join(ROOT, 'data', sample_name)
     filepath = os.path.join(filedir, 'report.xlsx')
 
     mode = 'a' if os.path.isfile(filepath) else 'w'

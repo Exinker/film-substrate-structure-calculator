@@ -1,0 +1,79 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "calculator"
+dynamic = ["version"]
+description = "A Python library to calculate film/substrate structure parameters."
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Pavel Vaschenko", email = "vaschenko@vmk.ru" },
+]
+keywords = [
+    "curvature",
+    "film/substrate structure",
+    "stress",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "jupyter==1.1.1",
+    "matplotlib>=3.9.0",
+    "numpy>=2.1.3",
+    "openpyxl==3.1.5",
+    "pandas>=2.2.3",
+    "python-dotenv==1.0.1",
+    "scipy>=1.14.1",
+    "spectrumlab",
+    "tqdm>=4.67.1",
+]
+requires-python = ">=3.12"
+
+[project.scripts]
+launch = "scripts.launch:run"
+emulate = "scripts.emulate:run"
+
+[dependency-groups]
+linting = [
+    "flake8>=7.1.1",
+    "flake8-commas>=4.0.0",
+    "flake8-import-order>=0.18.2",
+    "flake8-bugbear>=24.12.12",
+    "flake8-builtins>=2.5.0",
+    "pep8-naming>=0.14.1",
+]
+testing = [
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+]
+dev = [
+    {include-group = "linting"},
+    {include-group = "testing"},
+]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.sdist]
+force-include = [
+    "scripts",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "src/calculator",
+    "scripts",
+]
+
+[tool.uv.sources]
+spectrumlab = { git = "https://github.com/Exinker/spectrumlab", tag = "0.9.3" }

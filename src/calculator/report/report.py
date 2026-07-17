@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
 
+from calculator import ROOT
 from calculator.config import Config
 from calculator.curvature import Curvature
 from calculator.length import LengthMap
@@ -36,11 +37,9 @@ class ReportABC(ABC):
         cls,
         sample_name: SampleName,
         config: Config,
-        verbose: bool = False,
     ) -> None:
         length = LengthMap.calculate(
             sample_name=sample_name,
-            verbose=verbose,
         )
         curvature = Curvature.calculate(
             length=length,
@@ -284,8 +283,8 @@ class ReportV02(ReportABC):
 
 
 def write(frame: pd.DataFrame, sample_name: SampleName, sheet_name: str) -> None:
-    """Write frame to selected sheet."""
-    filedir = os.path.join(os.getcwd(), 'data', sample_name)
+    """Write frame to selected sheet"""
+    filedir = os.path.join(ROOT, 'data', sample_name)
     filepath = os.path.join(filedir, 'report.xlsx')
 
     mode = 'a' if os.path.isfile(filepath) else 'w'
