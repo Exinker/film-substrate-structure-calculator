@@ -6,7 +6,6 @@ from scipy import stats
 
 from calculator.types import Array
 
-
 T = NewType('T', float)
 
 N_DIGITS = 2
