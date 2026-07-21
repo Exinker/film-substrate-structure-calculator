@@ -12,7 +12,7 @@ DataKindV01 = Literal['sample', 'flat-standard', 'ref-standard']
 DataKindV02 = Literal['sample', 'flat-standard', 'h']
 
 
-class ConfigABC:
+class DataConfigABC:
 
     def save(self, sample_name: SampleName) -> None:
         dat = dataclasses.asdict(self)
@@ -22,7 +22,7 @@ class ConfigABC:
             json.dump(dat, file)
 
     @classmethod
-    def load(cls, sample_name: SampleName) -> 'ConfigABC':
+    def load(cls, sample_name: SampleName) -> 'DataConfigABC':
 
         filepath = os.path.join(ROOT, 'data', sample_name, 'config.json')
         try:
@@ -35,7 +35,7 @@ class ConfigABC:
 
 
 @dataclass(frozen=True, slots=True)
-class ConfigV01(ConfigABC):
+class DataConfigV01(DataConfigABC):
     curvature_ref_standart: ReciprocalMeter
     curvature_flat_standart: ReciprocalMeter
     thickness_film: MicroMeter
@@ -45,7 +45,7 @@ class ConfigV01(ConfigABC):
 
 
 @dataclass(frozen=True, slots=True)
-class ConfigV02(ConfigABC):
+class DataConfigV02(DataConfigABC):
     h: MicroMeter
     curvature_flat_standart: ReciprocalMeter
     thickness_film: MicroMeter

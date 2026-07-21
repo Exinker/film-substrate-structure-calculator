@@ -1,6 +1,6 @@
 import pytest
 
-from calculator.config import DETECTOR_PITCH
+from calculator.config import PLUGIN_CONFIG
 from calculator.types import N
 
 
@@ -11,4 +11,4 @@ def expected(
 ) -> N:
 
     left, right = [1/4*n_numbers - delta/2, 3/4*n_numbers + delta/2]
-    return DETECTOR_PITCH*(right - left)
+    return PLUGIN_CONFIG.detector_pitch*(right - left)

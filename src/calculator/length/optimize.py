@@ -6,7 +6,7 @@ from scipy.optimize import OptimizeResult, minimize
 
 from spectrumlab.peaks.blink_peaks import BlinkPeak
 
-from calculator.config import SMOOTH_WINDOW as WIDTH
+from calculator.config import PLUGIN_CONFIG
 from calculator.data import Datum
 from calculator.types import Array, N, U
 
@@ -33,7 +33,7 @@ def estimate_amplitude(
     y = datum.y[peak.number[peak.tail]]
 
     x0 = np.mean(peak.maxima)
-    g = gauss(x, x0, WIDTH, 1)
+    g = gauss(x, x0, PLUGIN_CONFIG.smooth_window, 1)
 
     amplitude = np.dot(y, g) / np.dot(g, g)
     return amplitude
@@ -58,7 +58,7 @@ def optimize(
         partial(loss, datum.x[peak.number], datum.y[peak.number]),
         x0=[
             position,
-            WIDTH,
+            PLUGIN_CONFIG.smooth_window,
             amplitude,
             np.nanpercentile(datum.y, 50),
         ],

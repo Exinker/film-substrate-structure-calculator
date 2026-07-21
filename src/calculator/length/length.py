@@ -15,10 +15,8 @@ from spectrumlab.peaks.blink_peaks import (
 from spectrumlab.spectra import EmittedSpectrum as Spectrum
 
 from calculator.config import (
-    DETECTOR_PITCH,
-    THRESHOLD,
-    SMOOTH_WINDOW,
     DataKind,
+    PLUGIN_CONFIG,
 )
 from calculator.data import Data, Datum
 from calculator.length.optimize import optimize, gauss
@@ -107,12 +105,13 @@ class Length:
     def calculate(
         cls,
         data: Data,
+        threshold: float = PLUGIN_CONFIG.threshold,
         show: bool = False,
     ) -> 'Length':
 
         value = np.array([
             kernel(
-                datum=datum.truncate(THRESHOLD),
+                datum=datum.truncate(threshold),
                 show=show,
             )
             for datum in tqdm(data, desc=f'{data.kind:<15}')
@@ -129,13 +128,14 @@ class Length:
 
 def kernel(
     datum: Datum,
-    pitch: MicroMeter = DETECTOR_PITCH,
+    pitch: MicroMeter = PLUGIN_CONFIG.detector_pitch,
+    window: int = PLUGIN_CONFIG.smooth_window,
     show: bool = False,
 ) -> MicroMeter:
 
     peaks = find_peaks(
         datum=datum,
-        window=SMOOTH_WINDOW,
+        window=window,
         show=show,
     )
 
@@ -315,6 +315,6 @@ def smooth_intensity(
 
     y_hat = signal.savgol_filter(y, window_length=window, polyorder=1)
     if np.any(index):
-        y_hat[index] = THRESHOLD
+        y_hat[index] = PLUGIN_CONFIG.threshold
 
     return y_hat
